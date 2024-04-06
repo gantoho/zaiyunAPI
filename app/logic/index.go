@@ -1,0 +1,12 @@
+package logic
+
+import (
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"zaiyun.app/app/model"
+)
+
+func GetIndexSwipers(context *gin.Context) {
+	indexSwipers := model.GetIndexSwipers()
+	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": indexSwipers, "total": len(indexSwipers)})
+}
