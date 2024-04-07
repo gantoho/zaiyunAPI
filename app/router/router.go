@@ -21,6 +21,7 @@ func InitRouter() {
 	user := r.Group("/")
 	{
 		user.POST("/login", logic.PostLogin)
+		user.POST("/register", logic.CreateUser)
 	}
 
 	orders := r.Group("/")
