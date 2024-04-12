@@ -36,7 +36,7 @@ func CaptchaGenerate() (CaptchaData, error) {
 
 	//注意，这里直接使用digitDriver 会报错。必须传一个指针。原因参考接口实现课程中的内容
 	c := base64Captcha.NewCaptcha(&digitDriver, store)
-	id, b64s, err := c.Generate()
+	id, b64s, _, err := c.Generate()
 	if err != nil {
 		return ret, err
 	}
