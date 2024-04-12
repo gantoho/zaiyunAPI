@@ -10,6 +10,8 @@ import (
 func InitRouter() {
 	r := gin.Default()
 
+	r.GET("/", logic.Index)
+
 	goods := r.Group("/")
 	{
 		goods.GET("/getGoods", logic.GetGoods)
