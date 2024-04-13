@@ -31,7 +31,7 @@ func InitRouter() {
 	orders := r.Group("/")
 	orders.Use(middleware.Verify)
 	{
-		orders.GET("/getOrders", logic.GetOrders)
+		orders.GET("/getUserOrders", logic.GetUserOrders)
 	}
 
 	{

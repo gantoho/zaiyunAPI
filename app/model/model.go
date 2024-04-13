@@ -73,3 +73,20 @@ type User struct {
 func (*User) TableName() string {
 	return "user"
 }
+
+// Order undefined
+type Order struct {
+	ID          int64     `json:"id" gorm:"id"`
+	UserId      int64     `json:"user_id" gorm:"user_id"`
+	GoodsId     int64     `json:"goods_id" gorm:"goods_id"`
+	Status      string    `json:"status" gorm:"status"` // 0 表示下单未付款\r\n1 表示订单已失效\r\n2 表示订单已付款\r\n3 表示订单已完成\r\n4 表示订单存在异常
+	Address     string    `json:"address" gorm:"address"`
+	Expire      int64     `json:"expire" gorm:"expire"`
+	CreatedTime time.Time `json:"created_time" gorm:"created_time"`
+	UpdatedTime time.Time `json:"updated_time" gorm:"updated_time"`
+}
+
+// TableName 表名称
+func (*Order) TableName() string {
+	return "order"
+}
