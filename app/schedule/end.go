@@ -2,7 +2,7 @@ package schedule
 
 import (
 	"time"
-	"zaiyun.app/app/model"
+	"zaiyun.app/app/models"
 )
 
 func Start() {
@@ -17,7 +17,7 @@ func OrderEnd() {
 		select {
 		case <-t.C:
 			//fmt.Printf("定时器 voteEnd 启动")
-			_ = model.OrderEnd()
+			_ = models.OrderEnd()
 		}
 	}
 }

@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strconv"
 	"time"
-	"zaiyun.app/app/model"
+	"zaiyun.app/app/models"
 )
 
 type User struct {
@@ -26,7 +26,7 @@ func PostLogin(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "server: login error"})
 		return
 	}
-	ret, err := model.PostLogin(user.Username)
+	ret, err := models.PostLogin(user.Username)
 	if err != nil {
 		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "login error"})
 		return
@@ -93,20 +93,20 @@ func CreateUser(context *gin.Context) {
 		return
 	}
 
-	var _getUser model.User
-	_getUser, _ = model.GetUser(user.Username)
+	var _getUser models.User
+	_getUser, _ = models.GetUser(user.Username)
 	if _getUser.ID > 0 {
 		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "用户已存在"})
 		return
 	}
 
-	newUser := model.User{
+	newUser := models.User{
 		Username:    user.Username,
 		Password:    encrypt(user.Password),
 		CreatedTime: time.Now(),
 		UpdatedTime: time.Now(),
 	}
-	err = model.CreateUser(&newUser)
+	err = models.CreateUser(&newUser)
 	if err != nil {
 		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "server: create user error"})
 		return

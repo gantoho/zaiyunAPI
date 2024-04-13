@@ -1,14 +1,14 @@
 package app
 
 import (
-	"zaiyun.app/app/model"
+	"zaiyun.app/app/models"
 	"zaiyun.app/app/router"
 	"zaiyun.app/app/schedule"
 )
 
 func Start() {
-	model.InitDB()
-	defer model.CloseDB()
+	models.InitDB()
+	defer models.CloseDB()
 	schedule.Start()
 	router.InitRouter()
 }
