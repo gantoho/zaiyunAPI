@@ -30,6 +30,7 @@ func InitRouter() {
 	}
 
 	orders := r.Group("/")
+	orders.Use(middleware.JWTAuth())
 	{
 		orders.GET("/getUserOrders", logic.GetUserOrders)
 	}
