@@ -4,12 +4,14 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/dlclark/regexp2"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"regexp"
 	"strconv"
 	"time"
+	"zaiyun.app/app/middleware"
 	"zaiyun.app/app/models"
 )
 
@@ -36,7 +38,16 @@ func PostLogin(context *gin.Context) {
 		return
 	}
 	context.SetCookie("id", strconv.FormatInt(ret.ID, 10), 86400, "/", "localhost", false, false)
-	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": gin.H{"id": ret.ID, "username": ret.Username, "avatar": ret.Avatar, "motto": ret.Motto, "created_time": ret.CreatedTime.Format("2006-01-02 15:04:05"), "updated_time": ret.UpdatedTime.Format("2006-01-02 15:04:05")}, "message": "login success"})
+	newJwt := middleware.NewJWT()
+	token, _ := newJwt.CreateToken(middleware.MyClaims{
+		Username: user.Username,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Unix() + 60*60*2,
+			Issuer:    user.Username,
+			NotBefore: time.Now().Unix() - 60,
+		},
+	})
+	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": gin.H{"id": ret.ID, "username": ret.Username, "token": token, "avatar": ret.Avatar, "motto": ret.Motto, "created_time": ret.CreatedTime.Format("2006-01-02 15:04:05"), "updated_time": ret.UpdatedTime.Format("2006-01-02 15:04:05")}, "message": "login success"})
 }
 
 type CUser struct {
