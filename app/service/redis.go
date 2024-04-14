@@ -13,7 +13,7 @@ func init() {
 	// 从配置文件或环境变量中获取Redis连接参数
 	redisCfg := config.RedisConfig{
 		Address:  "localhost:6379",
-		Password: "ganto123",
+		Password: "ganto12312",
 		DB:       0,
 	}
 
