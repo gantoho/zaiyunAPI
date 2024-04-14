@@ -90,17 +90,3 @@ type Order struct {
 func (*Order) TableName() string {
 	return "order"
 }
-
-// JwtBlacklist undefined
-type JwtBlacklist struct {
-	ID          int64     `json:"id" gorm:"id"`
-	Jwt         string    `json:"jwt" gorm:"jwt"`
-	ExpireAt    time.Time `json:"expire_at" gorm:"expire_at"`
-	CreatedTime time.Time `json:"created_time" gorm:"created_time"`
-	UpdatedTime time.Time `json:"updated_time" gorm:"updated_time"`
-}
-
-// TableName 表名称
-func (*JwtBlacklist) TableName() string {
-	return "jwt_blacklist"
-}
