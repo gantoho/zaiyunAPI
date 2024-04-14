@@ -15,6 +15,7 @@ func InitRouter() {
 	r.GET("/", logic.Index)
 
 	goods := r.Group("/")
+	goods.Use(middleware.JWTAuth())
 	{
 		goods.GET("/getGoods", logic.GetGoods)
 		goods.GET("/getGoodsDetail", logic.GetGoodsDetail)
@@ -29,13 +30,13 @@ func InitRouter() {
 	}
 
 	orders := r.Group("/")
-	orders.Use(middleware.VerifyMiddleware())
 	{
 		orders.GET("/getUserOrders", logic.GetUserOrders)
 	}
 
+	captcha := r.Group("/")
 	{
-		r.GET("/captcha", func(context *gin.Context) {
+		captcha.GET("/captcha", func(context *gin.Context) {
 			captcha, err := tools.CaptchaGenerate()
 			if err != nil {
 				context.JSON(http.StatusOK, tools.ECode{
@@ -50,7 +51,7 @@ func InitRouter() {
 			})
 		})
 
-		r.POST("/captcha/verify", func(context *gin.Context) {
+		captcha.POST("/captcha/verify", func(context *gin.Context) {
 			var param tools.CaptchaData
 			if err := context.ShouldBind(&param); err != nil {
 				context.JSON(http.StatusOK, tools.ParamErr)
