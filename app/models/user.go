@@ -19,12 +19,12 @@ func GetUserByUserName(username string) (User, error) {
 
 func GetUserByUserID(id int64) (User, error) {
 	var user User
+	fmt.Printf("user id: %+v", id)
 	err := Conn.Table("user").Where("id = ?", id).First(&user).Error
 	return user, err
 }
 
 func CreateUser(user *User) error {
-	fmt.Printf("user: %+v ****************", user)
 	err := Conn.Table("user").Create(&user).Error
 	if err != nil {
 		fmt.Printf("create user error: %v", err)
