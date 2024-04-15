@@ -1,9 +1,27 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
-func GetUserOrders(id int64) []Order {
-	return nil
+func GetUserOrders(id int64, args ...int) ([]Order, error) {
+	if len(args) == 0 {
+		args = append(args, 1)
+		args = append(args, 10)
+	}
+	if len(args) == 1 {
+		args = append(args, 10)
+	}
+	orders := make([]Order, 0)
+	err := Conn.Table("order").
+		Offset((args[0]-1)*args[1]).
+		Limit(args[1]).
+		Where("user_id = ?", id).Find(&orders).Error
+	if err != nil {
+		fmt.Printf("GetUserOrders Error: %+v", err)
+	}
+	return orders, err
 }
 
 func OrderEnd() error {
