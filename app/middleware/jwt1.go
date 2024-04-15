@@ -6,12 +6,18 @@ import (
 	"time"
 )
 
+type myClaims struct {
+	Username   string `json:"username"`
+	BufferTime int64  `json:"buffer-time"`
+	jwt.StandardClaims
+}
+
 func JWTAuth1() {
 	// 签发
 	mySignedString := []byte("AllYourBase")
 
 	// 第一种写法 StandardClaims struct
-	var mc = MyClaims{
+	var mc = myClaims{
 		Username: "gantoho",
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Unix() + 60*60*2,
@@ -30,7 +36,7 @@ func JWTAuth1() {
 	fmt.Printf("ss: %+v\n", ss)
 
 	// 解密
-	token, err = jwt.ParseWithClaims(ss, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+	token, err = jwt.ParseWithClaims(ss, &myClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return mySignedString, nil
 	})
 	if err != nil {
@@ -38,5 +44,5 @@ func JWTAuth1() {
 		panic(err)
 	}
 	fmt.Println(token)
-	fmt.Println(token.Claims.(*MyClaims).Username)
+	fmt.Println(token.Claims.(*myClaims).Username)
 }

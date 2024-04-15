@@ -62,7 +62,7 @@ func (*IndexSwiper) TableName() string {
 type User struct {
 	ID          int64     `json:"id" gorm:"id"`
 	Username    string    `json:"username" gorm:"username"`
-	Password    string    `json:"password" gorm:"password"`
+	Password    string    `json:"-" gorm:"password"`
 	Avatar      string    `json:"avatar" gorm:"avatar"`
 	Motto       string    `json:"motto" gorm:"motto"`
 	CreatedTime time.Time `json:"created_time" gorm:"created_time"`

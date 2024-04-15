@@ -40,11 +40,11 @@ func PostLogin(context *gin.Context) {
 	context.SetCookie("id", strconv.FormatInt(ret.ID, 10), 86400, "/", "localhost", false, false)
 	newJwt := middleware.NewJWT()
 	token, _ := newJwt.CreateToken(middleware.MyClaims{
-		Username: user.Username,
+		UserID: ret.ID,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Unix() + 60*60*2,
-			Issuer:    user.Username,
-			NotBefore: time.Now().Unix() - 60,
+			ExpiresAt: time.Now().Unix() + 60*60*24,
+			Issuer:    ret.Username,
+			NotBefore: time.Now().Unix(),
 		},
 	})
 	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": gin.H{"id": ret.ID, "username": ret.Username, "token": token, "avatar": ret.Avatar, "motto": ret.Motto, "created_time": ret.CreatedTime.Format("2006-01-02 15:04:05"), "updated_time": ret.UpdatedTime.Format("2006-01-02 15:04:05")}, "message": "login success"})
@@ -105,7 +105,7 @@ func CreateUser(context *gin.Context) {
 	}
 
 	var _getUser models.User
-	_getUser, _ = models.GetUser(user.Username)
+	_getUser, _ = models.GetUserByUserName(user.Username)
 	if _getUser.ID > 0 {
 		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "用户已存在"})
 		return
@@ -132,4 +132,21 @@ func encrypt(pwd string) string {
 	hashBytes := hash.Sum(nil)
 	hashString := hex.EncodeToString(hashBytes)
 	return hashString
+}
+
+func GetUser(context *gin.Context) {
+	token := context.Request.Header.Get("token")
+	if token == "" {
+		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "非法访问"})
+		return
+	}
+	newJwt := middleware.NewJWT()
+	claims, err := newJwt.ParseToken(token)
+	if err != nil {
+		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "token 无效"})
+		return
+	}
+	fmt.Printf("%+v\n", claims.UserID)
+	user, err := models.GetUserByUserID(claims.UserID)
+	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": user, "message": "success"})
 }

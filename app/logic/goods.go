@@ -1,6 +1,7 @@
 package logic
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -8,6 +9,7 @@ import (
 )
 
 func GetGoods(context *gin.Context) {
+	fmt.Printf("%+v\n", context.Keys["claims"])
 	pageCodeStr := context.Query("pageCode")
 	if pageCodeStr == "" {
 		pageCodeStr = "1"

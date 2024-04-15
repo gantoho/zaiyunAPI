@@ -11,9 +11,15 @@ func PostLogin(username string) (User, error) {
 	return user, err
 }
 
-func GetUser(username string) (User, error) {
+func GetUserByUserName(username string) (User, error) {
 	var user User
 	err := Conn.Table("user").Where("username = ?", username).First(&user).Error
+	return user, err
+}
+
+func GetUserByUserID(id int64) (User, error) {
+	var user User
+	err := Conn.Table("user").Where("id = ?", id).First(&user).Error
 	return user, err
 }
 

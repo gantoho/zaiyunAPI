@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"fmt"
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -9,8 +9,7 @@ import (
 )
 
 type MyClaims struct {
-	Username   string `json:"username"`
-	BufferTime int64  `json:"buffer-time"`
+	UserID int64 `json:"user-id"`
 	jwt.StandardClaims
 }
 
@@ -29,20 +28,17 @@ func JWTAuth() gin.HandlerFunc {
 		}
 
 		j := NewJWT()
-
 		claims, err := j.ParseToken(token)
 
 		if err != nil {
-			fmt.Printf("JWTAuth Error: %+v\n", err)
 			context.JSON(http.StatusOK, tools.ECode{
 				Code:    200,
-				Message: "token失效",
+				Message: "token 无效",
 				Data:    nil,
 			})
 			context.Abort()
 			return
 		}
-		fmt.Printf("JWTAuth claims: %+v\n", claims)
 		context.Set("claims", claims)
 		context.Next()
 	}
@@ -67,16 +63,22 @@ func (j *JWT) CreateToken(claims MyClaims) (string, error) {
 // 解析token
 func (j *JWT) ParseToken(tokenString string) (*MyClaims, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return j.SigningKey, nil
+		return j.SigningKey, nil // 替换为实际密钥
 	})
 
-	fmt.Printf("ParseToken: %+v +++++++++++ %s\n", token, err)
-
 	if err != nil {
-		fmt.Printf("ParseToken Error: %+v +++++++++++ %s\n", token, err)
+		var ve *jwt.ValidationError
+		if errors.As(err, &ve) {
+			if ve.Errors&jwt.ValidationErrorExpired != 0 {
+				// 如果 token 已过期，这里可以返回特定错误或处理逻辑
+				return nil, errors.New("token 过期")
+			}
+		}
 		return nil, err
 	}
-	claims, _ := token.Claims.(*MyClaims)
 
-	return claims, err
+	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid {
+		return claims, nil
+	}
+	return nil, errors.New("token 无效")
 }

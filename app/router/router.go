@@ -23,10 +23,15 @@ func InitRouter() {
 
 	r.GET("/getIndexSwipers", logic.GetIndexSwipers)
 
+	login := r.Group("/")
+	{
+		login.POST("/login", logic.PostLogin)
+		login.POST("/register", logic.CreateUser)
+	}
+
 	user := r.Group("/")
 	{
-		user.POST("/login", logic.PostLogin)
-		user.POST("/register", logic.CreateUser)
+		user.GET("/getUser", logic.GetUser)
 	}
 
 	orders := r.Group("/")
