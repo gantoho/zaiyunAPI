@@ -12,5 +12,5 @@ func GetIndexSwipers(context *gin.Context) {
 }
 
 func Index(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "Hello! Welcome to ZaiYunAPI."})
+	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "Hello! Welcome to ZaiYun API."})
 }
