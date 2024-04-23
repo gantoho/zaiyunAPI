@@ -20,6 +20,34 @@ type User struct {
 	Password string `json:"password"`
 }
 
+func GetLogin(context *gin.Context) {
+	var user User
+	username := context.Query("username")
+	password := context.Query("password")
+	user.Username = username
+	user.Password = password
+	ret, err := models.PostLogin(user.Username)
+	if err != nil {
+		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "login error"})
+		return
+	}
+	if ret.Password != encrypt(user.Password) {
+		context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": nil, "message": "密码错误"})
+		return
+	}
+	context.SetCookie("id", strconv.FormatInt(ret.ID, 10), 86400, "/", "localhost", false, false)
+	newJwt := middleware.NewJWT()
+	token, _ := newJwt.CreateToken(middleware.MyClaims{
+		UserID: ret.ID,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Unix() + 60*60*24,
+			Issuer:    ret.Username,
+			NotBefore: time.Now().Unix(),
+		},
+	})
+	context.SetCookie("token", token, 3600, "/", "localhost", false, true)
+	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": gin.H{"id": ret.ID, "username": ret.Username, "token": token, "avatar": ret.Avatar, "motto": ret.Motto, "created_time": ret.CreatedTime.Format("2006-01-02 15:04:05"), "updated_time": ret.UpdatedTime.Format("2006-01-02 15:04:05")}, "message": "login success"})
+}
 func PostLogin(context *gin.Context) {
 	var user User
 	err := context.ShouldBind(&user)
