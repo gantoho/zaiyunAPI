@@ -47,6 +47,7 @@ func PostLogin(context *gin.Context) {
 			NotBefore: time.Now().Unix(),
 		},
 	})
+	context.SetCookie("token", token, 3600, "/", "localhost", false, true)
 	context.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": gin.H{"id": ret.ID, "username": ret.Username, "token": token, "avatar": ret.Avatar, "motto": ret.Motto, "created_time": ret.CreatedTime.Format("2006-01-02 15:04:05"), "updated_time": ret.UpdatedTime.Format("2006-01-02 15:04:05")}, "message": "login success"})
 }
 

@@ -16,7 +16,12 @@ type MyClaims struct {
 func JWTAuth() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		token := context.Request.Header.Get("token")
-
+		if gin.Mode() == gin.DebugMode {
+			cookieToken, _ := context.Cookie("token")
+			if cookieToken != "" {
+				token = cookieToken
+			}
+		}
 		if token == "" {
 			context.JSON(http.StatusOK, tools.ECode{
 				Code:    200,
@@ -41,6 +46,7 @@ func JWTAuth() gin.HandlerFunc {
 		}
 		context.Set("claims", claims)
 		context.Next()
+
 	}
 }
 
