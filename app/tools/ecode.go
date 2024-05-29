@@ -14,6 +14,6 @@ func (e *ECode) String() string {
 
 var (
 	OK       = ECode{Code: 200, Message: "OK", Data: nil}
-	NotLogin = ECode{Code: 10001, Message: "未登录", Data: nil}
-	ParamErr = ECode{Code: 10002, Message: "参数错误", Data: nil}
+	NotLogin = ECode{Code: 701, Message: "Login Error", Data: nil}
+	ParamErr = ECode{Code: 702, Message: "Param Error", Data: nil}
 )

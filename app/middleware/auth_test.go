@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"testing"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 func TestCreate(t *testing.T) {
