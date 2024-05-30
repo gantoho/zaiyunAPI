@@ -13,7 +13,7 @@ $ go run main.go
 ```
 
 # 打包
-Linux
+Linux & MacOS
 ```sh
 $ go build -o zaiyun main.go
 ```
@@ -25,5 +25,17 @@ $ go build -o zaiyun.exe main.go
 Windows build Linux
 ```sh
 $ $env:GOOS="linux"
-$ $ go build -o zaiyun main.go
+$ go build -o zaiyun main.go
+```
+
+Windows build MacOS
+```sh
+$ $env:GOOS="darwin"
+$ go build -o zaiyun main.go
+```
+
+Linux && MacOS build Windows
+```sh
+$ $env:GOOS="windows"
+$ go build -o zaiyun.exe main.go
 ```
